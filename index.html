@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://unpkg.com/@tensorflow/tfjs"></script>
+        <script src="https://unpkg.com/@tensorflow-models/speech-commands"></script>
+    </head>
+    <body>
+        <div id="console"></div>
+        <script src="index.js"></script>
+        <!-- Added three buttons for the user to choose from. Pressing the button calls collect(), which gives training examples for our model-->
+        <button id='left' onmousedown = 'collect(0)' onmouseup="collect(null)">Left</button>
+        <button id='right' onmousedown = 'collect(1)' onmouseup='collect(null)'>Right</button>
+        <button id='noise' onmousedown = 'collect(2)' onmouseup='collect(null)'>Noise</button>
+    </body>
+</html>
