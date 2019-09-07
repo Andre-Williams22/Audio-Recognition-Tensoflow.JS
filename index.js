@@ -174,4 +174,5 @@ async function app() {
 app();
 
 
-// source https://codelabs.developers.google.com/codelabs/tensorflowjs-audio-codelab/index.html#0
+// learning sources https://codelabs.developers.google.com/codelabs/tensorflowjs-audio-codelab/index.html#0
+// learning sources github https://github.com/tensorflow/tfjs-models/blob/master/speech-commands/README.md
