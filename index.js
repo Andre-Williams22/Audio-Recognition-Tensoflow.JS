@@ -119,6 +119,49 @@ function predictWord() {
         document.querySelector("#console").textContent = scores[0].word;
     }, {probabilityThreshold: 0.75});} // 0.75 means the model will fire when it feels like it's more than 75% confident
 */
+
+//moveSlider() decreases the value of the slider if the label is 0 ("Left") , increases it if the label is 1 ("Right") 
+//and ignores if the label is 2 ("Noise").
+async function moveSlider(labelTensor) {
+    const label = (await labelTensor.data())[0];
+    document.getElementById('console').textContent = label;
+    if (label == 2) {
+      return;
+    }
+    let delta = 0.1;
+    const prevValue = +document.getElementById('output').value;
+    document.getElementById('output').value =
+        prevValue + (label === 0 ? -delta : delta);
+   }
+   // Real Time Predicitions 
+//listen() listens to the microphone and makes real time predictions. The code is very similar to the collect() method, 
+//which normalizes the raw spectrogram and drops all but the last NUM_FRAMES frames. The only difference is that we also 
+//call the trained model to get a prediction
+   function listen() {
+    if (recognizer.isListening()) {
+      recognizer.stopListening();
+      toggleButtons(true);
+      document.getElementById('listen').textContent = 'Listen';
+      return;
+    }
+    toggleButtons(false);
+    document.getElementById('listen').textContent = 'Stop';
+    document.getElementById('listen').disabled = false;
+   
+    recognizer.listen(async ({spectrogram: {frameSize, data}}) => {
+      const vals = normalize(data.subarray(-frameSize * NUM_FRAMES));
+      const input = tf.tensor(vals, [1, ...INPUT_SHAPE]);
+      const probs = model.predict(input);
+      const predLabel = probs.argMax(1);
+      await moveSlider(predLabel);
+      tf.dispose([input, probs, predLabel]);
+    }, {
+      overlapFactor: 0.999,
+      includeSpectrogram: true,
+      invokeCallbackOnNoiseAndUnknown: true
+    });
+   }
+
 async function app() {
     recognizer = speechCommands.create('BROWSER.FFT');
     await recognizer.ensureModeLoaded();
@@ -127,6 +170,8 @@ async function app() {
 
 }
 
+
 app();
 
 
+// source https://codelabs.developers.google.com/codelabs/tensorflowjs-audio-codelab/index.html#0
