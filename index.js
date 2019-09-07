@@ -25,6 +25,8 @@ function collect(label) {
     });
     
     function normalize (x) {
+    // And to avoid numerical issues, we normalize the data to have an average of 0 and a standard deviation of 1. 
+    // In this case, the spectrogram values are usually large negative numbers around -100 and deviation of 10:
         const mean = -100
         const std = 10;
         return x.map(x => (x - mean) / std);
